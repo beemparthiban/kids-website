@@ -1,0 +1,36 @@
+<svg width="560" height="360" viewBox="0 0 560 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Free typing illustration</title>
+  <desc id="desc">A colorful keyboard with large floating letters.</desc>
+  <rect width="560" height="360" rx="34" fill="#E9FBF7"/>
+  <path d="M78 74C124 25 204 29 243 72C283 116 365 83 416 110C467 137 490 196 460 244C431 292 355 281 306 304C257 327 198 345 149 313C99 282 28 259 35 198C42 137 32 124 78 74Z" fill="#D5F6F0"/>
+  <circle cx="448" cy="74" r="34" fill="#FFD166"/>
+  <circle cx="91" cy="277" r="22" fill="#FF9F1C"/>
+  <g filter="url(#shadow)">
+    <rect x="93" y="144" width="374" height="152" rx="24" fill="#21313C"/>
+    <rect x="112" y="164" width="336" height="112" rx="16" fill="#F9FEFF"/>
+    <rect x="135" y="181" width="52" height="36" rx="8" fill="#FF6B6B"/>
+    <rect x="198" y="181" width="52" height="36" rx="8" fill="#4D96FF"/>
+    <rect x="261" y="181" width="52" height="36" rx="8" fill="#FFD166"/>
+    <rect x="324" y="181" width="52" height="36" rx="8" fill="#4ECDC4"/>
+    <rect x="387" y="181" width="38" height="36" rx="8" fill="#F47BBD"/>
+    <rect x="151" y="229" width="70" height="30" rx="8" fill="#78C56E"/>
+    <rect x="233" y="229" width="96" height="30" rx="8" fill="#FF9F1C"/>
+    <rect x="341" y="229" width="68" height="30" rx="8" fill="#4D96FF"/>
+  </g>
+  <g font-family="Arial Rounded MT Bold, Trebuchet MS, Arial, sans-serif" font-weight="900" text-anchor="middle">
+    <text x="145" y="100" font-size="76" fill="#FF6B6B">A</text>
+    <text x="263" y="113" font-size="88" fill="#4D96FF">B</text>
+    <text x="386" y="103" font-size="76" fill="#78C56E">C</text>
+    <text x="162" y="209" font-size="30" fill="#FFFFFF">A</text>
+    <text x="224" y="209" font-size="30" fill="#FFFFFF">B</text>
+    <text x="287" y="209" font-size="30" fill="#21313C">C</text>
+    <text x="350" y="209" font-size="30" fill="#FFFFFF">D</text>
+  </g>
+  <path d="M404 265C419 246 448 246 459 263C469 279 459 301 436 305C414 309 391 282 404 265Z" fill="#FFD9A8"/>
+  <path d="M425 256C435 250 451 256 455 268" stroke="#21313C" stroke-width="6" stroke-linecap="round"/>
+  <defs>
+    <filter id="shadow" x="81" y="136" width="398" height="176" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#21313C" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+</svg>

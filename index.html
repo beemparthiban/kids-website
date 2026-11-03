@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Big Letter Typing</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell" id="app" tabindex="-1">
+      <section class="screen home-screen" data-screen="home">
+        <div class="home-hero">
+          <div class="home-copy">
+            <p class="eyebrow">Kids Typing</p>
+            <h1>Big Letter Typing</h1>
+            <p class="intro">Bright practice for curious little typists.</p>
+          </div>
+
+          <div class="letter-ribbon" aria-hidden="true">
+            <span>A</span>
+            <span>B</span>
+            <span>C</span>
+            <span>D</span>
+            <span>E</span>
+            <span>F</span>
+          </div>
+        </div>
+
+        <div class="mode-grid" aria-label="Typing modes">
+          <button class="mode-button mode-free" type="button" data-mode="free">
+            <img class="mode-art" src="assets/free-typing.svg" alt="" />
+            <span>
+              <strong>Free Typing</strong>
+              <small>Make bright letter rows</small>
+            </span>
+          </button>
+
+          <button class="mode-button mode-learn" type="button" data-mode="learn">
+            <img class="mode-art" src="assets/learn-letters.svg" alt="" />
+            <span>
+              <strong>Learn Letters</strong>
+              <small>Meet every letter friend</small>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <section class="screen mode-screen hidden" data-screen="free">
+        <header class="mode-header">
+          <button class="icon-button" type="button" data-action="home" aria-label="Go home">
+            <span aria-hidden="true">&larr;</span>
+          </button>
+          <div>
+            <p class="eyebrow">Free Typing</p>
+            <h2>Type Any Letter</h2>
+          </div>
+          <div class="header-actions">
+            <button class="text-button" type="button" data-action="back">Back</button>
+            <button class="text-button" type="button" data-action="clear">Clear</button>
+          </div>
+        </header>
+
+        <div class="typing-stage" aria-live="polite">
+          <p class="typing-placeholder" id="typingPlaceholder">Start with A, B, C...</p>
+          <div class="typed-letters" id="typedLetters"></div>
+        </div>
+
+        <p class="mode-note">Only A-Z keys work here.</p>
+      </section>
+
+      <section class="screen mode-screen hidden" data-screen="learn">
+        <header class="mode-header">
+          <button class="icon-button" type="button" data-action="home" aria-label="Go home">
+            <span aria-hidden="true">&larr;</span>
+          </button>
+          <div>
+            <p class="eyebrow">Learn Letters</p>
+            <h2>Press A to Z</h2>
+          </div>
+          <div class="header-actions">
+            <button class="text-button toggle-button is-on" type="button" data-action="toggle-sound" aria-pressed="true">
+              Sound On
+            </button>
+            <button class="text-button toggle-button" type="button" data-action="toggle-case" aria-pressed="false">
+              Small Letters
+            </button>
+            <button class="text-button" type="button" data-action="reset">Reset</button>
+          </div>
+        </header>
+
+        <p class="letter-message" id="letterMessage" aria-live="polite">
+          Press a letter key.
+        </p>
+
+        <div class="letter-grid" id="letterGrid" aria-label="Alphabet letters"></div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

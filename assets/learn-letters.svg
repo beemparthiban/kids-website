@@ -1,0 +1,33 @@
+<svg width="560" height="360" viewBox="0 0 560 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Learn letters illustration</title>
+  <desc id="desc">Alphabet blocks with an apple, cat, and sun.</desc>
+  <rect width="560" height="360" rx="34" fill="#FFF3F9"/>
+  <path d="M88 257C107 196 153 151 221 149C289 146 306 91 371 93C436 95 490 143 496 205C502 267 441 316 367 318C293 320 273 286 219 304C165 322 69 318 88 257Z" fill="#FFE2F2"/>
+  <circle cx="443" cy="82" r="38" fill="#FFD166"/>
+  <path d="M443 31V11M443 153V133M494 82H514M372 82H392M479 46L493 32M393 132L407 118M479 118L493 132M393 32L407 46" stroke="#FF9F1C" stroke-width="8" stroke-linecap="round"/>
+  <g filter="url(#shadow)">
+    <rect x="82" y="150" width="120" height="120" rx="20" fill="#FF6B6B"/>
+    <rect x="220" y="116" width="120" height="120" rx="20" fill="#4D96FF"/>
+    <rect x="358" y="151" width="120" height="120" rx="20" fill="#4ECDC4"/>
+  </g>
+  <g font-family="Arial Rounded MT Bold, Trebuchet MS, Arial, sans-serif" font-weight="900" text-anchor="middle">
+    <text x="142" y="232" font-size="86" fill="#FFFFFF">A</text>
+    <text x="280" y="199" font-size="86" fill="#FFFFFF">B</text>
+    <text x="418" y="233" font-size="86" fill="#FFFFFF">C</text>
+  </g>
+  <path d="M132 104C143 82 171 82 181 104C191 127 170 148 157 164C144 148 121 126 132 104Z" fill="#78C56E"/>
+  <path d="M158 86C157 74 162 64 174 58" stroke="#21313C" stroke-width="6" stroke-linecap="round"/>
+  <path d="M136 97C146 78 172 79 180 98C188 118 171 139 158 153C145 139 126 118 136 97Z" fill="#FF4D5A"/>
+  <path d="M401 112C415 93 447 94 459 115C471 137 453 159 430 159C407 159 388 132 401 112Z" fill="#FFD9A8"/>
+  <circle cx="418" cy="126" r="4" fill="#21313C"/>
+  <circle cx="443" cy="126" r="4" fill="#21313C"/>
+  <path d="M430 135C435 141 441 141 446 135" stroke="#21313C" stroke-width="5" stroke-linecap="round"/>
+  <path d="M409 104L399 84L421 97M451 104L463 84L438 97" fill="#FFD9A8"/>
+  <path d="M254 268C270 251 297 251 313 268" stroke="#F47BBD" stroke-width="14" stroke-linecap="round"/>
+  <path d="M245 286H322" stroke="#21313C" stroke-width="8" stroke-linecap="round"/>
+  <defs>
+    <filter id="shadow" x="70" y="108" width="420" height="179" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#21313C" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+</svg>
