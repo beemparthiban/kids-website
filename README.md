@@ -1,6 +1,6 @@
 # Big Letter Typing
 
-A simple kid-friendly typing website for learning A-Z letters.
+A simple static page for helping kids learn typing and practice A-Z letters.
 
 ## Run Locally
 
