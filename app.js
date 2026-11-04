@@ -247,12 +247,14 @@ function showFreeWarning() {
 }
 
 function showLearnWarning() {
+  stopSpeaking();
   letterMessageEl.textContent = "Try another letter!";
   letterMessageEl.classList.add("repeat");
   restartAnimation(letterMessageEl);
 }
 
 function showNumberWarning() {
+  stopSpeaking();
   numberMessageEl.textContent = "Try another number!";
   numberMessageEl.classList.add("repeat");
   restartAnimation(numberMessageEl);
