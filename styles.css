@@ -467,6 +467,28 @@ h2 {
   border-color: rgba(33, 49, 60, 0.12);
 }
 
+.confetti-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -24px;
+  left: var(--confetti-left);
+  width: clamp(12px, 1.3vw, 18px);
+  height: clamp(18px, 1.8vw, 26px);
+  border-radius: 5px;
+  background: var(--confetti-color);
+  opacity: 0;
+  transform: translateY(-30px) rotate(0deg);
+  animation: confetti-fall 1700ms ease-out forwards;
+  animation-delay: var(--confetti-delay);
+}
+
 @keyframes pop-in {
   from {
     opacity: 0;
@@ -503,6 +525,20 @@ h2 {
   }
   75% {
     transform: translateX(-4px);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, -30px, 0) rotate(0deg);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--confetti-sway), 105vh, 0) rotate(720deg);
   }
 }
 

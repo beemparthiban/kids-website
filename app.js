@@ -60,6 +60,8 @@ const state = {
   lastWarningAt: 0,
   foundLetters: new Set(),
   foundNumbers: new Set(),
+  lettersComplete: false,
+  numbersComplete: false,
   soundOn: true,
   smallLetters: false,
 };
@@ -78,6 +80,7 @@ const letterGridEl = document.querySelector("#letterGrid");
 const letterMessageEl = document.querySelector("#letterMessage");
 const numberGridEl = document.querySelector("#numberGrid");
 const numberMessageEl = document.querySelector("#numberMessage");
+const confettiLayerEl = document.querySelector("#confettiLayer");
 const soundToggleEls = document.querySelectorAll('[data-action="toggle-sound"]');
 const caseToggleEl = document.querySelector('[data-action="toggle-case"]');
 
@@ -205,6 +208,7 @@ function renderFreeTyping() {
 function resetLearning() {
   state.previousLetter = "";
   state.foundLetters.clear();
+  state.lettersComplete = false;
   letterMessageEl.textContent = "Press a letter key.";
   letterMessageEl.classList.remove("repeat");
 
@@ -219,6 +223,7 @@ function resetLearning() {
 function resetNumbers() {
   state.previousNumber = "";
   state.foundNumbers.clear();
+  state.numbersComplete = false;
   numberMessageEl.textContent = "Press a number key.";
   numberMessageEl.classList.remove("repeat");
 
@@ -244,15 +249,57 @@ function showFreeWarning() {
 function showLearnWarning() {
   letterMessageEl.textContent = "Try another letter!";
   letterMessageEl.classList.add("repeat");
-  speak("Try another letter.");
   restartAnimation(letterMessageEl);
 }
 
 function showNumberWarning() {
   numberMessageEl.textContent = "Try another number!";
   numberMessageEl.classList.add("repeat");
-  speak("Try another number.");
   restartAnimation(numberMessageEl);
+}
+
+function launchConfetti() {
+  confettiLayerEl.innerHTML = "";
+  const confettiColors = ["#ff6b6b", "#4ecdc4", "#ffd166", "#4d96ff", "#78c56e", "#f47bbd"];
+
+  for (let index = 0; index < 80; index += 1) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    piece.style.setProperty("--confetti-left", `${Math.random() * 100}%`);
+    piece.style.setProperty(
+      "--confetti-color",
+      confettiColors[index % confettiColors.length]
+    );
+    piece.style.setProperty("--confetti-delay", `${Math.random() * 0.35}s`);
+    piece.style.setProperty("--confetti-sway", `${Math.random() * 220 - 110}px`);
+    confettiLayerEl.appendChild(piece);
+  }
+
+  window.setTimeout(() => {
+    confettiLayerEl.innerHTML = "";
+  }, 2400);
+}
+
+function celebrateLettersIfComplete() {
+  if (state.lettersComplete || state.foundLetters.size !== letters.length) {
+    return;
+  }
+
+  state.lettersComplete = true;
+  letterMessageEl.classList.remove("repeat");
+  letterMessageEl.textContent = "You typed every letter!";
+  launchConfetti();
+}
+
+function celebrateNumbersIfComplete() {
+  if (state.numbersComplete || state.foundNumbers.size !== numbers.length) {
+    return;
+  }
+
+  state.numbersComplete = true;
+  numberMessageEl.classList.remove("repeat");
+  numberMessageEl.textContent = "You typed every number!";
+  launchConfetti();
 }
 
 function showRepeatWarning() {
@@ -300,6 +347,7 @@ function showLetter(letter) {
     }
   });
 
+  celebrateLettersIfComplete();
 }
 
 function showNumber(number) {
@@ -322,6 +370,8 @@ function showNumber(number) {
       tile.classList.toggle("was-found", state.foundNumbers.has(tile.dataset.number));
     }
   });
+
+  celebrateNumbersIfComplete();
 }
 
 function handleLetter(letter) {
