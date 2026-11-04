@@ -244,6 +244,7 @@ h2 {
 }
 
 .mode-screen {
+  width: min(1400px, 100%);
   display: flex;
   flex-direction: column;
   gap: clamp(18px, 3.4vw, 34px);
@@ -257,6 +258,11 @@ h2 {
 
 .mode-screen.hidden {
   display: none;
+}
+
+.mode-screen[data-screen="free"] {
+  width: min(1560px, 100%);
+  gap: clamp(14px, 2.4vw, 26px);
 }
 
 .mode-header {
@@ -319,7 +325,7 @@ h2 {
 .typing-stage {
   display: flex;
   flex: 1;
-  min-height: 360px;
+  min-height: max(520px, calc(100vh - 280px));
   padding: clamp(18px, 4vw, 42px);
   border: 5px dashed #98bfcb;
   border-radius: 8px;
@@ -369,6 +375,11 @@ h2 {
   font-size: clamp(1.2rem, 2.4vw, 1.8rem);
   font-weight: 900;
   text-align: center;
+}
+
+.mode-note.warning {
+  color: #bf3131;
+  animation: friendly-shake 360ms ease;
 }
 
 .letter-message {

@@ -42,6 +42,8 @@ const state = {
   mode: "home",
   typedLetters: [],
   previousLetter: "",
+  previousFreeLetter: "",
+  lastWarningAt: 0,
   foundLetters: new Set(),
   soundOn: true,
   smallLetters: false,
@@ -55,6 +57,7 @@ const screens = {
 
 const typedLettersEl = document.querySelector("#typedLetters");
 const typingPlaceholderEl = document.querySelector("#typingPlaceholder");
+const typingFeedbackEl = document.querySelector("#typingFeedback");
 const letterGridEl = document.querySelector("#letterGrid");
 const letterMessageEl = document.querySelector("#letterMessage");
 const soundToggleEl = document.querySelector('[data-action="toggle-sound"]');
@@ -126,6 +129,9 @@ function setMode(mode) {
 
   if (mode === "free") {
     state.typedLetters = [];
+    state.previousFreeLetter = "";
+    typingFeedbackEl.textContent = "Only A-Z keys work here.";
+    typingFeedbackEl.classList.remove("warning");
     renderFreeTyping();
   }
 
@@ -164,14 +170,49 @@ function resetLearning() {
   stopSpeaking();
 }
 
+function restartAnimation(element) {
+  element.style.animation = "none";
+  element.offsetHeight;
+  element.style.animation = "";
+}
+
+function showFreeWarning() {
+  typingFeedbackEl.textContent = "Try a different letter!";
+  typingFeedbackEl.classList.add("warning");
+  restartAnimation(typingFeedbackEl);
+}
+
+function showLearnWarning() {
+  letterMessageEl.textContent = "Try another letter!";
+  letterMessageEl.classList.add("repeat");
+  restartAnimation(letterMessageEl);
+}
+
+function showRepeatWarning() {
+  const now = Date.now();
+  if (now - state.lastWarningAt < 700) {
+    return;
+  }
+
+  state.lastWarningAt = now;
+
+  if (state.mode === "free") {
+    showFreeWarning();
+    return;
+  }
+
+  if (state.mode === "learn") {
+    showLearnWarning();
+  }
+}
+
 function showLetter(letter) {
-  const repeatedLetter = state.previousLetter === letter;
   state.previousLetter = letter;
   const word = letterWords[letter];
 
-  letterMessageEl.classList.toggle("repeat", repeatedLetter);
-  letterMessageEl.textContent = repeatedLetter ? "Try another letter!" : letterLabel(letter);
-  speak(repeatedLetter ? "Try another letter." : word);
+  letterMessageEl.classList.remove("repeat");
+  letterMessageEl.textContent = letterLabel(letter);
+  speak(word);
 
   document.querySelectorAll(".letter-tile").forEach((tile) => {
     const isTarget = tile.dataset.letter === letter;
@@ -181,24 +222,20 @@ function showLetter(letter) {
     if (isTarget) {
       state.foundLetters.add(letter);
       tile.classList.remove("was-found");
-      tile.style.animation = "none";
-      tile.offsetHeight;
-      tile.style.animation = "";
+      restartAnimation(tile);
     } else {
       tile.classList.toggle("was-found", state.foundLetters.has(tile.dataset.letter));
     }
   });
 
-  if (repeatedLetter) {
-    letterMessageEl.style.animation = "none";
-    letterMessageEl.offsetHeight;
-    letterMessageEl.style.animation = "";
-  }
 }
 
 function handleLetter(letter) {
   if (state.mode === "free") {
     state.typedLetters.push(letter);
+    state.previousFreeLetter = letter;
+    typingFeedbackEl.textContent = "Nice. Pick a new letter next.";
+    typingFeedbackEl.classList.remove("warning");
     renderFreeTyping();
     return;
   }
@@ -233,7 +270,16 @@ window.addEventListener(
       return;
     }
 
-    handleLetter(event.key.toUpperCase());
+    const letter = event.key.toUpperCase();
+    const previousLetter =
+      state.mode === "free" ? state.previousFreeLetter : state.previousLetter;
+
+    if (event.repeat || previousLetter === letter) {
+      showRepeatWarning();
+      return;
+    }
+
+    handleLetter(letter);
   },
   { capture: true }
 );
@@ -255,12 +301,18 @@ document.querySelectorAll("[data-action]").forEach((button) => {
 
     if (action === "clear") {
       state.typedLetters = [];
+      state.previousFreeLetter = "";
+      typingFeedbackEl.textContent = "Only A-Z keys work here.";
+      typingFeedbackEl.classList.remove("warning");
       renderFreeTyping();
       return;
     }
 
     if (action === "back") {
       state.typedLetters.pop();
+      state.previousFreeLetter = state.typedLetters.at(-1) || "";
+      typingFeedbackEl.textContent = "Only A-Z keys work here.";
+      typingFeedbackEl.classList.remove("warning");
       renderFreeTyping();
       return;
     }
