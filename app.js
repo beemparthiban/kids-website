@@ -64,6 +64,9 @@ const state = {
   numbersComplete: false,
   soundOn: true,
   smallLetters: false,
+  ipadKeyboardOn: false,
+  lastCaptureLetter: "",
+  lastCaptureAt: 0,
 };
 
 const screens = {
@@ -77,6 +80,7 @@ const typedLettersEl = document.querySelector("#typedLetters");
 const typingPlaceholderEl = document.querySelector("#typingPlaceholder");
 const typingFeedbackEl = document.querySelector("#typingFeedback");
 const freeLetterKeyboardEl = document.querySelector("#freeLetterKeyboard");
+const keyboardCaptureEl = document.querySelector("#keyboardCapture");
 const letterGridEl = document.querySelector("#letterGrid");
 const letterMessageEl = document.querySelector("#letterMessage");
 const numberGridEl = document.querySelector("#numberGrid");
@@ -84,6 +88,9 @@ const numberMessageEl = document.querySelector("#numberMessage");
 const confettiLayerEl = document.querySelector("#confettiLayer");
 const soundToggleEls = document.querySelectorAll('[data-action="toggle-sound"]');
 const caseToggleEl = document.querySelector('[data-action="toggle-case"]');
+const ipadKeyboardToggleEl = document.querySelector(
+  '[data-action="toggle-ipad-keyboard"]'
+);
 
 function letterColor(letter) {
   const index = letters.indexOf(letter);
@@ -182,9 +189,47 @@ function renderToggles() {
   caseToggleEl.setAttribute("aria-pressed", String(state.smallLetters));
 }
 
+function renderIpadKeyboardToggle() {
+  ipadKeyboardToggleEl.textContent = state.ipadKeyboardOn
+    ? "Hide Keyboard"
+    : "iPad Keyboard";
+  ipadKeyboardToggleEl.classList.toggle("is-on", state.ipadKeyboardOn);
+  ipadKeyboardToggleEl.setAttribute("aria-pressed", String(state.ipadKeyboardOn));
+}
+
+function showIpadKeyboard() {
+  state.ipadKeyboardOn = true;
+  keyboardCaptureEl.value = "";
+  renderIpadKeyboardToggle();
+  keyboardCaptureEl.focus({ preventScroll: true });
+}
+
+function hideIpadKeyboard() {
+  state.ipadKeyboardOn = false;
+  keyboardCaptureEl.value = "";
+  renderIpadKeyboardToggle();
+  keyboardCaptureEl.blur();
+}
+
+function refocusIpadKeyboardIfNeeded() {
+  if (state.mode !== "free" || !state.ipadKeyboardOn) {
+    return;
+  }
+
+  window.setTimeout(() => {
+    if (state.mode === "free" && state.ipadKeyboardOn) {
+      keyboardCaptureEl.focus({ preventScroll: true });
+    }
+  }, 0);
+}
+
 function setMode(mode) {
   if ((state.mode === "learn" || state.mode === "numbers") && mode !== state.mode) {
     stopSpeaking();
+  }
+
+  if (state.mode === "free" && mode !== "free") {
+    hideIpadKeyboard();
   }
 
   state.mode = mode;
@@ -195,8 +240,12 @@ function setMode(mode) {
   if (mode === "free") {
     state.typedLetters = [];
     state.previousFreeLetter = "";
+    state.ipadKeyboardOn = false;
+    state.lastCaptureLetter = "";
+    state.lastCaptureAt = 0;
     typingFeedbackEl.textContent = "Tap letters or use A-Z keys.";
     typingFeedbackEl.classList.remove("warning");
+    renderIpadKeyboardToggle();
     renderFreeTyping();
   }
 
@@ -438,6 +487,26 @@ function processNumberInput(number, isRepeat = false) {
   handleNumber(number);
 }
 
+function processKeyboardCaptureValue() {
+  if (state.mode !== "free") {
+    keyboardCaptureEl.value = "";
+    return;
+  }
+
+  const capturedLetters = keyboardCaptureEl.value.toUpperCase().match(/[A-Z]/g) || [];
+  const now = Date.now();
+  keyboardCaptureEl.value = "";
+
+  capturedLetters.forEach((letter) => {
+    const alreadyHandled =
+      letter === state.lastCaptureLetter && now - state.lastCaptureAt < 250;
+
+    if (!alreadyHandled) {
+      processLetterInput(letter);
+    }
+  });
+}
+
 function isPlainLetterKey(event) {
   return (
     event.key.length === 1 &&
@@ -482,10 +551,40 @@ window.addEventListener(
       return;
     }
 
-    processLetterInput(event.key.toUpperCase(), event.repeat);
+    const letter = event.key.toUpperCase();
+    processLetterInput(letter, event.repeat);
+
+    if (event.target === keyboardCaptureEl) {
+      state.lastCaptureLetter = letter;
+      state.lastCaptureAt = Date.now();
+    }
   },
   { capture: true }
 );
+
+keyboardCaptureEl.addEventListener("beforeinput", (event) => {
+  if (state.mode !== "free") {
+    event.preventDefault();
+    return;
+  }
+
+  if (event.inputType !== "insertText" || !/^[a-z]$/i.test(event.data || "")) {
+    event.preventDefault();
+  }
+});
+
+keyboardCaptureEl.addEventListener("input", processKeyboardCaptureValue);
+
+keyboardCaptureEl.addEventListener("blur", () => {
+  window.setTimeout(() => {
+    if (!state.ipadKeyboardOn || document.activeElement === keyboardCaptureEl) {
+      return;
+    }
+
+    state.ipadKeyboardOn = false;
+    renderIpadKeyboardToggle();
+  }, 120);
+});
 
 freeLetterKeyboardEl.addEventListener("click", (event) => {
   const key = event.target.closest("[data-touch-letter]");
@@ -494,6 +593,7 @@ freeLetterKeyboardEl.addEventListener("click", (event) => {
   }
 
   processLetterInput(key.dataset.touchLetter);
+  refocusIpadKeyboardIfNeeded();
 });
 
 letterGridEl.addEventListener("click", (event) => {
@@ -535,12 +635,26 @@ document.querySelectorAll("[data-action]").forEach((button) => {
       return;
     }
 
+    if (action === "toggle-ipad-keyboard") {
+      if (state.ipadKeyboardOn) {
+        hideIpadKeyboard();
+        typingFeedbackEl.textContent = "Tap letters or use A-Z keys.";
+      } else {
+        showIpadKeyboard();
+        typingFeedbackEl.textContent = "iPad keyboard is on. Only letters work.";
+      }
+
+      typingFeedbackEl.classList.remove("warning");
+      return;
+    }
+
     if (action === "clear") {
       state.typedLetters = [];
       state.previousFreeLetter = "";
       typingFeedbackEl.textContent = "Tap letters or use A-Z keys.";
       typingFeedbackEl.classList.remove("warning");
       renderFreeTyping();
+      refocusIpadKeyboardIfNeeded();
       return;
     }
 
@@ -550,6 +664,7 @@ document.querySelectorAll("[data-action]").forEach((button) => {
       typingFeedbackEl.textContent = "Tap letters or use A-Z keys.";
       typingFeedbackEl.classList.remove("warning");
       renderFreeTyping();
+      refocusIpadKeyboardIfNeeded();
       return;
     }
 
@@ -593,6 +708,7 @@ renderLetterGrid();
 renderFreeLetterKeyboard();
 renderNumberGrid();
 renderToggles();
+renderIpadKeyboardToggle();
 
 if ("serviceWorker" in navigator && window.location.protocol !== "file:") {
   window.addEventListener("load", () => {

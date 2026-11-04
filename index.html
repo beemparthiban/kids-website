@@ -67,9 +67,17 @@
           </button>
           <div>
             <p class="eyebrow">Free Typing</p>
-            <h2>Tap Any Letter</h2>
+            <h2>Tap or Type</h2>
           </div>
           <div class="header-actions">
+            <button
+              class="text-button toggle-button"
+              type="button"
+              data-action="toggle-ipad-keyboard"
+              aria-pressed="false"
+            >
+              iPad Keyboard
+            </button>
             <button class="text-button" type="button" data-action="back">Delete Letter</button>
             <button class="text-button" type="button" data-action="clear">Clear</button>
           </div>
@@ -83,6 +91,18 @@
         <p class="mode-note" id="typingFeedback" aria-live="polite">
           Tap letters or use A-Z keys.
         </p>
+
+        <input
+          class="keyboard-capture"
+          id="keyboardCapture"
+          type="text"
+          inputmode="text"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          aria-label="iPad keyboard letter input"
+        />
 
         <div class="touch-keyboard" id="freeLetterKeyboard" aria-label="Letter touch keyboard"></div>
       </section>

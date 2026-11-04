@@ -390,6 +390,22 @@ h2 {
   animation: friendly-shake 360ms ease;
 }
 
+.keyboard-capture {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0.01;
+  color: transparent;
+  background: transparent;
+  caret-color: transparent;
+  font-size: 20px;
+  outline: none;
+}
+
 .touch-keyboard {
   display: grid;
   grid-template-columns: repeat(13, minmax(0, 1fr));
