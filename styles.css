@@ -44,6 +44,7 @@ body {
 button {
   color: inherit;
   font: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .app-shell {
@@ -389,6 +390,15 @@ h2 {
   animation: friendly-shake 360ms ease;
 }
 
+.touch-keyboard {
+  display: grid;
+  grid-template-columns: repeat(13, minmax(0, 1fr));
+  gap: clamp(7px, 1vw, 12px);
+  padding: clamp(10px, 1.6vw, 16px);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.52);
+}
+
 .letter-message {
   min-height: 74px;
   margin: 0;
@@ -431,6 +441,7 @@ h2 {
   display: grid;
   min-height: clamp(78px, 11vw, 132px);
   place-items: center;
+  appearance: none;
   border: 4px solid rgba(33, 49, 60, 0.07);
   border-radius: 8px;
   background:
@@ -440,12 +451,33 @@ h2 {
   font-size: clamp(3rem, 7vw, 6.4rem);
   font-weight: 1000;
   line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   transform: scale(1);
   transition:
     background-color 180ms ease,
     border-color 180ms ease,
     color 180ms ease,
     transform 180ms ease;
+}
+
+.touch-key {
+  min-height: clamp(54px, 5.5vw, 74px);
+  border-color: rgba(33, 49, 60, 0.14);
+  background: var(--letter-color);
+  color: #ffffff;
+  font-size: clamp(2rem, 3.6vw, 3.2rem);
+  text-shadow: 0 3px 0 rgba(33, 49, 60, 0.16);
+}
+
+.letter-tile:hover,
+.letter-tile:focus-visible {
+  border-color: rgba(33, 49, 60, 0.28);
+  outline: none;
+  transform: translateY(-2px);
 }
 
 .letter-tile.is-active {
@@ -576,6 +608,10 @@ h2 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
+  .touch-keyboard {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
   .number-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -605,6 +641,10 @@ h2 {
 
   .letter-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .touch-keyboard {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .number-grid {

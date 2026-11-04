@@ -67,7 +67,7 @@
           </button>
           <div>
             <p class="eyebrow">Free Typing</p>
-            <h2>Type Any Letter</h2>
+            <h2>Tap Any Letter</h2>
           </div>
           <div class="header-actions">
             <button class="text-button" type="button" data-action="back">Delete Letter</button>
@@ -81,8 +81,10 @@
         </div>
 
         <p class="mode-note" id="typingFeedback" aria-live="polite">
-          Only A-Z keys work here.
+          Tap letters or use A-Z keys.
         </p>
+
+        <div class="touch-keyboard" id="freeLetterKeyboard" aria-label="Letter touch keyboard"></div>
       </section>
 
       <section class="screen mode-screen hidden" data-screen="learn">
@@ -92,7 +94,7 @@
           </button>
           <div>
             <p class="eyebrow">Type Letters</p>
-            <h2>Press A to Z</h2>
+            <h2>Tap A to Z</h2>
           </div>
           <div class="header-actions">
             <button class="text-button toggle-button is-on" type="button" data-action="toggle-sound" aria-pressed="true">
@@ -106,7 +108,7 @@
         </header>
 
         <p class="letter-message" id="letterMessage" aria-live="polite">
-          Press a letter key.
+          Tap or type a letter.
         </p>
 
         <div class="letter-grid" id="letterGrid" aria-label="Alphabet letters"></div>
@@ -119,7 +121,7 @@
           </button>
           <div>
             <p class="eyebrow">Type Numbers</p>
-            <h2>Press 0 to 9</h2>
+            <h2>Tap 0 to 9</h2>
           </div>
           <div class="header-actions">
             <button class="text-button toggle-button is-on" type="button" data-action="toggle-sound" aria-pressed="true">
@@ -130,7 +132,7 @@
         </header>
 
         <p class="letter-message" id="numberMessage" aria-live="polite">
-          Press a number key.
+          Tap or type a number.
         </p>
 
         <div class="letter-grid number-grid" id="numberGrid" aria-label="Number keys"></div>

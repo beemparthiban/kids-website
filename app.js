@@ -76,6 +76,7 @@ const screens = {
 const typedLettersEl = document.querySelector("#typedLetters");
 const typingPlaceholderEl = document.querySelector("#typingPlaceholder");
 const typingFeedbackEl = document.querySelector("#typingFeedback");
+const freeLetterKeyboardEl = document.querySelector("#freeLetterKeyboard");
 const letterGridEl = document.querySelector("#letterGrid");
 const letterMessageEl = document.querySelector("#letterMessage");
 const numberGridEl = document.querySelector("#numberGrid");
@@ -98,12 +99,29 @@ function renderLetterGrid() {
   letterGridEl.innerHTML = "";
 
   letters.forEach((letter) => {
-    const tile = document.createElement("div");
+    const tile = document.createElement("button");
+    tile.type = "button";
     tile.className = "letter-tile";
     tile.textContent = displayLetter(letter);
+    tile.setAttribute("aria-label", `Type ${letter}`);
     tile.dataset.letter = letter;
     tile.style.setProperty("--letter-color", letterColor(letter));
     letterGridEl.appendChild(tile);
+  });
+}
+
+function renderFreeLetterKeyboard() {
+  freeLetterKeyboardEl.innerHTML = "";
+
+  letters.forEach((letter) => {
+    const key = document.createElement("button");
+    key.type = "button";
+    key.className = "letter-tile touch-key";
+    key.textContent = displayLetter(letter);
+    key.setAttribute("aria-label", `Type ${letter}`);
+    key.dataset.touchLetter = letter;
+    key.style.setProperty("--letter-color", letterColor(letter));
+    freeLetterKeyboardEl.appendChild(key);
   });
 }
 
@@ -111,9 +129,11 @@ function renderNumberGrid() {
   numberGridEl.innerHTML = "";
 
   numbers.forEach((number) => {
-    const tile = document.createElement("div");
+    const tile = document.createElement("button");
+    tile.type = "button";
     tile.className = "letter-tile number-tile";
     tile.textContent = number;
+    tile.setAttribute("aria-label", `Type ${number}`);
     tile.dataset.number = number;
     tile.style.setProperty("--letter-color", numberColor(number));
     numberGridEl.appendChild(tile);
@@ -175,7 +195,7 @@ function setMode(mode) {
   if (mode === "free") {
     state.typedLetters = [];
     state.previousFreeLetter = "";
-    typingFeedbackEl.textContent = "Only A-Z keys work here.";
+    typingFeedbackEl.textContent = "Tap letters or use A-Z keys.";
     typingFeedbackEl.classList.remove("warning");
     renderFreeTyping();
   }
@@ -209,10 +229,10 @@ function resetLearning() {
   state.previousLetter = "";
   state.foundLetters.clear();
   state.lettersComplete = false;
-  letterMessageEl.textContent = "Press a letter key.";
+  letterMessageEl.textContent = "Tap or type a letter.";
   letterMessageEl.classList.remove("repeat");
 
-  document.querySelectorAll(".letter-tile").forEach((tile) => {
+  letterGridEl.querySelectorAll(".letter-tile").forEach((tile) => {
     tile.classList.remove("is-active", "was-found");
     tile.textContent = displayLetter(tile.dataset.letter);
   });
@@ -224,7 +244,7 @@ function resetNumbers() {
   state.previousNumber = "";
   state.foundNumbers.clear();
   state.numbersComplete = false;
-  numberMessageEl.textContent = "Press a number key.";
+  numberMessageEl.textContent = "Tap or type a number.";
   numberMessageEl.classList.remove("repeat");
 
   document.querySelectorAll(".number-tile").forEach((tile) => {
@@ -335,7 +355,7 @@ function showLetter(letter) {
   letterMessageEl.textContent = letterLabel(letter);
   speak(word);
 
-  document.querySelectorAll(".letter-tile").forEach((tile) => {
+  letterGridEl.querySelectorAll(".letter-tile").forEach((tile) => {
     const isTarget = tile.dataset.letter === letter;
     tile.classList.toggle("is-active", isTarget);
     tile.textContent = displayLetter(tile.dataset.letter);
@@ -397,6 +417,27 @@ function handleNumber(number) {
   }
 }
 
+function processLetterInput(letter, isRepeat = false) {
+  const previousLetter =
+    state.mode === "free" ? state.previousFreeLetter : state.previousLetter;
+
+  if (isRepeat || previousLetter === letter) {
+    showRepeatWarning();
+    return;
+  }
+
+  handleLetter(letter);
+}
+
+function processNumberInput(number, isRepeat = false) {
+  if (isRepeat || state.previousNumber === number) {
+    showRepeatWarning();
+    return;
+  }
+
+  handleNumber(number);
+}
+
 function isPlainLetterKey(event) {
   return (
     event.key.length === 1 &&
@@ -433,13 +474,7 @@ window.addEventListener(
         return;
       }
 
-      const number = event.key;
-      if (event.repeat || state.previousNumber === number) {
-        showRepeatWarning();
-        return;
-      }
-
-      handleNumber(number);
+      processNumberInput(event.key, event.repeat);
       return;
     }
 
@@ -447,19 +482,43 @@ window.addEventListener(
       return;
     }
 
-    const letter = event.key.toUpperCase();
-    const previousLetter =
-      state.mode === "free" ? state.previousFreeLetter : state.previousLetter;
-
-    if (event.repeat || previousLetter === letter) {
-      showRepeatWarning();
-      return;
-    }
-
-    handleLetter(letter);
+    processLetterInput(event.key.toUpperCase(), event.repeat);
   },
   { capture: true }
 );
+
+freeLetterKeyboardEl.addEventListener("click", (event) => {
+  const key = event.target.closest("[data-touch-letter]");
+  if (!key || state.mode !== "free") {
+    return;
+  }
+
+  processLetterInput(key.dataset.touchLetter);
+});
+
+letterGridEl.addEventListener("click", (event) => {
+  const key = event.target.closest("[data-letter]");
+  if (!key || state.mode !== "learn") {
+    return;
+  }
+
+  processLetterInput(key.dataset.letter);
+});
+
+numberGridEl.addEventListener("click", (event) => {
+  const key = event.target.closest("[data-number]");
+  if (!key || state.mode !== "numbers") {
+    return;
+  }
+
+  processNumberInput(key.dataset.number);
+});
+
+document.addEventListener("contextmenu", (event) => {
+  if (state.mode !== "home" && event.target.closest(".letter-tile")) {
+    event.preventDefault();
+  }
+});
 
 document.querySelectorAll("[data-mode]").forEach((button) => {
   button.addEventListener("click", () => {
@@ -479,7 +538,7 @@ document.querySelectorAll("[data-action]").forEach((button) => {
     if (action === "clear") {
       state.typedLetters = [];
       state.previousFreeLetter = "";
-      typingFeedbackEl.textContent = "Only A-Z keys work here.";
+      typingFeedbackEl.textContent = "Tap letters or use A-Z keys.";
       typingFeedbackEl.classList.remove("warning");
       renderFreeTyping();
       return;
@@ -488,7 +547,7 @@ document.querySelectorAll("[data-action]").forEach((button) => {
     if (action === "back") {
       state.typedLetters.pop();
       state.previousFreeLetter = state.typedLetters.at(-1) || "";
-      typingFeedbackEl.textContent = "Only A-Z keys work here.";
+      typingFeedbackEl.textContent = "Tap letters or use A-Z keys.";
       typingFeedbackEl.classList.remove("warning");
       renderFreeTyping();
       return;
@@ -515,9 +574,10 @@ document.querySelectorAll("[data-action]").forEach((button) => {
     if (action === "toggle-case") {
       state.smallLetters = !state.smallLetters;
       renderToggles();
+      renderFreeLetterKeyboard();
       renderFreeTyping();
       if (state.mode === "learn") {
-        document.querySelectorAll(".letter-tile").forEach((tile) => {
+        letterGridEl.querySelectorAll(".letter-tile").forEach((tile) => {
           tile.textContent = displayLetter(tile.dataset.letter);
         });
 
@@ -530,6 +590,7 @@ document.querySelectorAll("[data-action]").forEach((button) => {
 });
 
 renderLetterGrid();
+renderFreeLetterKeyboard();
 renderNumberGrid();
 renderToggles();
 
