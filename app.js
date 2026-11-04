@@ -532,3 +532,9 @@ document.querySelectorAll("[data-action]").forEach((button) => {
 renderLetterGrid();
 renderNumberGrid();
 renderToggles();
+
+if ("serviceWorker" in navigator && window.location.protocol !== "file:") {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js", { scope: "./" }).catch(() => {});
+  });
+}
