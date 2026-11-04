@@ -1,4 +1,5 @@
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const numbers = "0123456789".split("");
 const letterWords = {
   A: "apple",
   B: "ball",
@@ -27,6 +28,18 @@ const letterWords = {
   Y: "yo-yo",
   Z: "zebra",
 };
+const numberWords = {
+  0: "zero",
+  1: "one",
+  2: "two",
+  3: "three",
+  4: "four",
+  5: "five",
+  6: "six",
+  7: "seven",
+  8: "eight",
+  9: "nine",
+};
 const colors = [
   "#ff6b6b",
   "#4ecdc4",
@@ -43,8 +56,10 @@ const state = {
   typedLetters: [],
   previousLetter: "",
   previousFreeLetter: "",
+  previousNumber: "",
   lastWarningAt: 0,
   foundLetters: new Set(),
+  foundNumbers: new Set(),
   soundOn: true,
   smallLetters: false,
 };
@@ -53,6 +68,7 @@ const screens = {
   home: document.querySelector('[data-screen="home"]'),
   free: document.querySelector('[data-screen="free"]'),
   learn: document.querySelector('[data-screen="learn"]'),
+  numbers: document.querySelector('[data-screen="numbers"]'),
 };
 
 const typedLettersEl = document.querySelector("#typedLetters");
@@ -60,12 +76,19 @@ const typingPlaceholderEl = document.querySelector("#typingPlaceholder");
 const typingFeedbackEl = document.querySelector("#typingFeedback");
 const letterGridEl = document.querySelector("#letterGrid");
 const letterMessageEl = document.querySelector("#letterMessage");
-const soundToggleEl = document.querySelector('[data-action="toggle-sound"]');
+const numberGridEl = document.querySelector("#numberGrid");
+const numberMessageEl = document.querySelector("#numberMessage");
+const soundToggleEls = document.querySelectorAll('[data-action="toggle-sound"]');
 const caseToggleEl = document.querySelector('[data-action="toggle-case"]');
 
 function letterColor(letter) {
   const index = letters.indexOf(letter);
   return colors[index % colors.length];
+}
+
+function numberColor(number) {
+  const index = Number(number);
+  return colors[(index + 2) % colors.length];
 }
 
 function renderLetterGrid() {
@@ -81,12 +104,29 @@ function renderLetterGrid() {
   });
 }
 
+function renderNumberGrid() {
+  numberGridEl.innerHTML = "";
+
+  numbers.forEach((number) => {
+    const tile = document.createElement("div");
+    tile.className = "letter-tile number-tile";
+    tile.textContent = number;
+    tile.dataset.number = number;
+    tile.style.setProperty("--letter-color", numberColor(number));
+    numberGridEl.appendChild(tile);
+  });
+}
+
 function displayLetter(letter) {
   return state.smallLetters ? letter.toLowerCase() : letter;
 }
 
 function letterLabel(letter) {
   return `${displayLetter(letter)} - ${letterWords[letter]}`;
+}
+
+function numberLabel(number) {
+  return `${number} - ${numberWords[number]}`;
 }
 
 function speak(text) {
@@ -108,9 +148,11 @@ function stopSpeaking() {
 }
 
 function renderToggles() {
-  soundToggleEl.textContent = state.soundOn ? "Sound On" : "Sound Off";
-  soundToggleEl.classList.toggle("is-on", state.soundOn);
-  soundToggleEl.setAttribute("aria-pressed", String(state.soundOn));
+  soundToggleEls.forEach((soundToggleEl) => {
+    soundToggleEl.textContent = state.soundOn ? "Sound On" : "Sound Off";
+    soundToggleEl.classList.toggle("is-on", state.soundOn);
+    soundToggleEl.setAttribute("aria-pressed", String(state.soundOn));
+  });
 
   caseToggleEl.textContent = state.smallLetters ? "Big Letters" : "Small Letters";
   caseToggleEl.classList.toggle("is-on", state.smallLetters);
@@ -118,7 +160,7 @@ function renderToggles() {
 }
 
 function setMode(mode) {
-  if (state.mode === "learn" && mode !== "learn") {
+  if ((state.mode === "learn" || state.mode === "numbers") && mode !== state.mode) {
     stopSpeaking();
   }
 
@@ -137,6 +179,10 @@ function setMode(mode) {
 
   if (mode === "learn") {
     resetLearning();
+  }
+
+  if (mode === "numbers") {
+    resetNumbers();
   }
 
   document.body.dataset.mode = mode;
@@ -170,6 +216,19 @@ function resetLearning() {
   stopSpeaking();
 }
 
+function resetNumbers() {
+  state.previousNumber = "";
+  state.foundNumbers.clear();
+  numberMessageEl.textContent = "Press a number key.";
+  numberMessageEl.classList.remove("repeat");
+
+  document.querySelectorAll(".number-tile").forEach((tile) => {
+    tile.classList.remove("is-active", "was-found");
+  });
+
+  stopSpeaking();
+}
+
 function restartAnimation(element) {
   element.style.animation = "none";
   element.offsetHeight;
@@ -185,7 +244,15 @@ function showFreeWarning() {
 function showLearnWarning() {
   letterMessageEl.textContent = "Try another letter!";
   letterMessageEl.classList.add("repeat");
+  speak("Try another letter.");
   restartAnimation(letterMessageEl);
+}
+
+function showNumberWarning() {
+  numberMessageEl.textContent = "Try another number!";
+  numberMessageEl.classList.add("repeat");
+  speak("Try another number.");
+  restartAnimation(numberMessageEl);
 }
 
 function showRepeatWarning() {
@@ -203,6 +270,11 @@ function showRepeatWarning() {
 
   if (state.mode === "learn") {
     showLearnWarning();
+    return;
+  }
+
+  if (state.mode === "numbers") {
+    showNumberWarning();
   }
 }
 
@@ -230,6 +302,28 @@ function showLetter(letter) {
 
 }
 
+function showNumber(number) {
+  state.previousNumber = number;
+  const word = numberWords[number];
+
+  numberMessageEl.classList.remove("repeat");
+  numberMessageEl.textContent = numberLabel(number);
+  speak(word);
+
+  document.querySelectorAll(".number-tile").forEach((tile) => {
+    const isTarget = tile.dataset.number === number;
+    tile.classList.toggle("is-active", isTarget);
+
+    if (isTarget) {
+      state.foundNumbers.add(number);
+      tile.classList.remove("was-found");
+      restartAnimation(tile);
+    } else {
+      tile.classList.toggle("was-found", state.foundNumbers.has(tile.dataset.number));
+    }
+  });
+}
+
 function handleLetter(letter) {
   if (state.mode === "free") {
     state.typedLetters.push(letter);
@@ -245,10 +339,26 @@ function handleLetter(letter) {
   }
 }
 
+function handleNumber(number) {
+  if (state.mode === "numbers") {
+    showNumber(number);
+  }
+}
+
 function isPlainLetterKey(event) {
   return (
     event.key.length === 1 &&
     /^[a-z]$/i.test(event.key) &&
+    !event.altKey &&
+    !event.ctrlKey &&
+    !event.metaKey
+  );
+}
+
+function isPlainNumberKey(event) {
+  return (
+    event.key.length === 1 &&
+    /^[0-9]$/.test(event.key) &&
     !event.altKey &&
     !event.ctrlKey &&
     !event.metaKey
@@ -265,6 +375,21 @@ window.addEventListener(
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
+
+    if (state.mode === "numbers") {
+      if (!isPlainNumberKey(event)) {
+        return;
+      }
+
+      const number = event.key;
+      if (event.repeat || state.previousNumber === number) {
+        showRepeatWarning();
+        return;
+      }
+
+      handleNumber(number);
+      return;
+    }
 
     if (!isPlainLetterKey(event)) {
       return;
@@ -318,7 +443,11 @@ document.querySelectorAll("[data-action]").forEach((button) => {
     }
 
     if (action === "reset") {
-      resetLearning();
+      if (state.mode === "numbers") {
+        resetNumbers();
+      } else {
+        resetLearning();
+      }
       return;
     }
 
@@ -349,4 +478,5 @@ document.querySelectorAll("[data-action]").forEach((button) => {
 });
 
 renderLetterGrid();
+renderNumberGrid();
 renderToggles();

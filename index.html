@@ -42,6 +42,14 @@
               <small>Meet every letter friend</small>
             </span>
           </button>
+
+          <button class="mode-button mode-numbers" type="button" data-mode="numbers">
+            <img class="mode-art" src="assets/learn-numbers.svg" alt="" />
+            <span>
+              <strong>Learn Numbers</strong>
+              <small>Count with bright numbers</small>
+            </span>
+          </button>
         </div>
       </section>
 
@@ -95,6 +103,30 @@
         </p>
 
         <div class="letter-grid" id="letterGrid" aria-label="Alphabet letters"></div>
+      </section>
+
+      <section class="screen mode-screen hidden" data-screen="numbers">
+        <header class="mode-header">
+          <button class="icon-button" type="button" data-action="home" aria-label="Go home">
+            <span aria-hidden="true">&larr;</span>
+          </button>
+          <div>
+            <p class="eyebrow">Learn Numbers</p>
+            <h2>Press 0 to 9</h2>
+          </div>
+          <div class="header-actions">
+            <button class="text-button toggle-button is-on" type="button" data-action="toggle-sound" aria-pressed="true">
+              Sound On
+            </button>
+            <button class="text-button" type="button" data-action="reset">Reset</button>
+          </div>
+        </header>
+
+        <p class="letter-message" id="numberMessage" aria-live="polite">
+          Press a number key.
+        </p>
+
+        <div class="letter-grid number-grid" id="numberGrid" aria-label="Number keys"></div>
       </section>
     </main>
 

@@ -1,0 +1,33 @@
+<svg width="560" height="360" viewBox="0 0 560 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Learn numbers illustration</title>
+  <desc id="desc">Colorful number blocks with counting stars.</desc>
+  <rect width="560" height="360" rx="34" fill="#FFF8E5"/>
+  <path d="M77 227C61 161 112 95 183 96C254 97 275 51 338 63C401 75 443 124 463 182C484 239 454 304 391 318C328 332 292 290 237 304C182 318 94 293 77 227Z" fill="#FFEAB2"/>
+  <circle cx="436" cy="78" r="28" fill="#4ECDC4"/>
+  <circle cx="111" cy="281" r="24" fill="#F47BBD"/>
+  <g filter="url(#shadow)">
+    <rect x="92" y="141" width="92" height="112" rx="18" fill="#FFD166"/>
+    <rect x="202" y="103" width="112" height="150" rx="22" fill="#FF9F1C"/>
+    <rect x="333" y="141" width="134" height="112" rx="20" fill="#4D96FF"/>
+  </g>
+  <g font-family="Arial Rounded MT Bold, Trebuchet MS, Arial, sans-serif" font-weight="900" text-anchor="middle">
+    <text x="138" y="218" font-size="82" fill="#21313C">1</text>
+    <text x="258" y="205" font-size="104" fill="#FFFFFF">2</text>
+    <text x="400" y="219" font-size="82" fill="#FFFFFF">3</text>
+  </g>
+  <g fill="#FF6B6B">
+    <path d="M130 72L139 92L161 94L144 109L149 131L130 119L111 131L116 109L99 94L121 92L130 72Z"/>
+    <path d="M251 43L258 59L275 61L262 73L266 90L251 81L236 90L240 73L227 61L244 59L251 43Z"/>
+  </g>
+  <g fill="#78C56E">
+    <path d="M416 272L425 292L447 294L430 309L435 331L416 319L397 331L402 309L385 294L407 292L416 272Z"/>
+    <path d="M474 244L481 260L498 262L485 274L489 291L474 282L459 291L463 274L450 262L467 260L474 244Z"/>
+  </g>
+  <path d="M258 274C278 296 319 296 339 274" stroke="#21313C" stroke-width="9" stroke-linecap="round"/>
+  <path d="M229 284H370" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" opacity="0.74"/>
+  <defs>
+    <filter id="shadow" x="80" y="95" width="399" height="174" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#21313C" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+</svg>
