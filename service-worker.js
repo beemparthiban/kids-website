@@ -1,4 +1,4 @@
-const CACHE_NAME = "little-typer-v3";
+const CACHE_NAME = "little-typer-v4";
 const APP_SCOPE = self.registration.scope;
 const APP_ASSETS = [
   "",

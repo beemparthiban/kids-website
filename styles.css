@@ -73,10 +73,6 @@ button {
 }
 
 .home-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: clamp(18px, 4vw, 46px);
-  align-items: end;
   padding: clamp(22px, 4vw, 42px);
   border: 1px solid rgba(255, 255, 255, 0.78);
   border-radius: 8px;
@@ -87,7 +83,7 @@ button {
 }
 
 .home-copy {
-  max-width: 760px;
+  max-width: 900px;
 }
 
 .eyebrow {
@@ -122,50 +118,6 @@ h2 {
   font-size: clamp(1.45rem, 2.8vw, 2.25rem);
   font-weight: 800;
   line-height: 1.2;
-}
-
-.letter-ribbon {
-  display: grid;
-  grid-template-columns: repeat(3, clamp(54px, 7vw, 88px));
-  gap: clamp(8px, 1.3vw, 14px);
-}
-
-.letter-ribbon span {
-  display: grid;
-  aspect-ratio: 1;
-  place-items: center;
-  border: 3px solid rgba(33, 49, 60, 0.12);
-  border-radius: 8px;
-  color: #ffffff;
-  font-size: clamp(2.1rem, 4.5vw, 4.1rem);
-  font-weight: 1000;
-  line-height: 1;
-  text-shadow: 0 3px 0 rgba(33, 49, 60, 0.16);
-  box-shadow: var(--small-shadow);
-}
-
-.letter-ribbon span:nth-child(1) {
-  background: var(--coral);
-}
-
-.letter-ribbon span:nth-child(2) {
-  background: var(--sky);
-}
-
-.letter-ribbon span:nth-child(3) {
-  background: var(--sun);
-}
-
-.letter-ribbon span:nth-child(4) {
-  background: var(--mint);
-}
-
-.letter-ribbon span:nth-child(5) {
-  background: var(--pink);
-}
-
-.letter-ribbon span:nth-child(6) {
-  background: var(--green);
 }
 
 .mode-grid {
@@ -597,14 +549,6 @@ h2 {
 
   .mode-button {
     min-height: 360px;
-  }
-
-  .home-hero {
-    grid-template-columns: 1fr;
-  }
-
-  .letter-ribbon {
-    grid-template-columns: repeat(6, minmax(42px, 1fr));
   }
 
   .mode-header {
